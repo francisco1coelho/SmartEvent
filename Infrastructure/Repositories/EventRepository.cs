@@ -1,0 +1,13 @@
+﻿using SmartEvent.Application.Interfaces;
+using SmartEvent.Domain.Entities;
+using SmartEvent.Infrastructure.Persistence;
+
+namespace SmartEvent.Infrastructure.Repositories;
+
+public class EventRepository : Repository<Event>, IEventRepository
+{
+    public EventRepository(SmartEventDbContext context) : base(context)
+    {
+    }
+}
+

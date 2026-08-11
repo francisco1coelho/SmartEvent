@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <File Path="docker-compose.yml" />
+    <Project Path="API/SmartEvent.API.csproj" Id="2f0a8dc5-9ec5-43d7-95c9-ce6939bbe917" />
+    <Project Path="Application/SmartEvent.Application.csproj" Id="74c6b268-6560-4f21-a611-ce36fd15bd74" />
+    <Project Path="Domain/SmartEvent.Domain.csproj" Id="d3dd44e9-c8a5-4da0-80fa-6391d97babac" />
+    <Project Path="Infrastructure/SmartEvent.Infrastructure.csproj" Id="4fb8144b-1ac3-437f-97c7-e93ba7d07491" />
+  </Folder>
+</Solution>

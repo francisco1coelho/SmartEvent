@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:16
+    container_name: smartevent-db
+    environment:
+      POSTGRES_USER: smartevent
+      POSTGRES_PASSWORD: smartevent123
+      POSTGRES_DB: smartevent
+    ports:
+      - "5432:5432"
+    volumes:
+      - smartevent-data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: src/SmartEvent.API/Dockerfile
+    container_name: smartevent-api
+    depends_on:
+      - db
+    ports:
+      - "5000:8080"
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=db;Database=smartevent;Username=smartevent;Password=smartevent123"
+
+volumes:
+  smartevent-data:
