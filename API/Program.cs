@@ -3,6 +3,7 @@ using SmartEvent.Application.Interfaces;
 using SmartEvent.Application.Services;
 using SmartEvent.Infrastructure.Persistence;
 using SmartEvent.Infrastructure.Repositories;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,8 +30,13 @@ builder.Services.AddControllers();
 // registers a service that investigates the API endpoints in the application and generates metadata for them, which can be used to create API documentation.
 builder.Services.AddEndpointsApiExplorer();
 // registers a service that generates API documentation
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 
+    options.IncludeXmlComments(xmlPath);
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -21,15 +21,16 @@ public class UsersController : ControllerBase
         _userService = userService;
     }
 
-    /**
-     * Get user by ID.
-     * 
-     * This endpoint retrieves the information of a user with the specified ID.
-     * It returns a 404 Not Found response if the user does not exist.
-     *
-     * @param id The ID of the user to retrieve.
-     * @return An IActionResult containing the user information or a 404 Not Found response.
-     */
+    /// <summary>
+    /// Get user by ID.
+    /// 
+    /// This endpoint retrieves the information of a user with the specified ID.
+    /// It returns a 404 Not Found response if the user does not exist.
+    /// </summary>
+    ///
+    ///  <param name="id">The ID of the user to retrieve.</param>
+    ///  <returns>Returns an IActionResult containing the user information or a 404 Not Found response.</returns>
+    ///
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -41,16 +42,16 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
 
-    /**
-     * Update user information.
-     * 
-     * This endpoint allows updating the information of a user with the specified ID.
-     * Only users with the "Admin" role are authorized to perform this action.
-     *
-     * @param id The ID of the user to update.
-     * @param user The updated user information in the request body.
-     * @return An IActionResult indicating the result of the operation.
-     */
+    /// <summary>
+    /// Update user information.
+    /// 
+    /// This endpoint allows updating the information of a user with the specified ID.
+    /// Only users with the "Admin" role are authorized to perform this action.
+    /// </summary>
+    ///  
+    /// <param name="dto"> The updated user information in the request body.</param>
+    /// <param name="userId"> The ID of the user to update.</param>
+    /// <returns>Returns an IActionResult indicating the result of the operation.</returns>
 
     [Authorize(Roles = "Admin")]
     [HttpPut("{id:int}")]
@@ -61,16 +62,15 @@ public class UsersController : ControllerBase
         return success ? NoContent() : NotFound();
     }
 
-    /**
-     * Update the authenticated user's profile.
-     * 
-     * This endpoint allows the authenticated user to update their own profile information.
-     * The user must be authenticated to access this endpoint.
-     *
-     * @param dto The updated profile information in the request body.
-     * @return An IActionResult indicating the result of the operation.
-     */
 
+    /// <summary>
+    /// Update the authenticated user's profile.
+    /// 
+    /// This endpoint allows the authenticated user to update their own profile information.
+    /// The user must be authenticated to access this endpoint.
+    /// </summary>
+    /// <param name="dto">The updated profile information in the request body.</param>
+    /// <returns>An IActionResult indicating the result of the operation.</returns>
     [Authorize]
     [HttpPut("me")]
     public async Task<IActionResult> UpdateMe([FromBody] UpdateMeDto dto)
@@ -88,6 +88,11 @@ public class UsersController : ControllerBase
         return success ? NoContent() : NotFound();
     }
 
+    /// <summary>
+    /// Get user by email.  
+    /// </summary>
+    /// <param name="email"></param>
+    /// <returns></returns>
     [Authorize(Roles = "Admin")]
     [Authorize(Roles = "Organizer")]
     [HttpGet("{email}")]

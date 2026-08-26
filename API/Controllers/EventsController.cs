@@ -16,6 +16,11 @@ public class EventsController : ControllerBase
         _unitOfWork = unitOfWork;
     }
 
+    /// <summary>
+    /// Retrieves an event by its ID.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -27,7 +32,11 @@ public class EventsController : ControllerBase
         return Ok(@event);
     }
 
-    
+    /// <summary>
+    /// Deletes an event by its ID. Only users with the "Admin" role are authorized to perform this action.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [Authorize(Roles = "Admin")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
@@ -42,16 +51,17 @@ public class EventsController : ControllerBase
         return NoContent();
     }
 
-    /**
-     * Update event information.
-     * 
-     * This endpoint allows updating the information of an event with the specified ID.
-     * Only users with the "Admin" or "Organizer" roles are authorized to perform this action.
-     *
-     * @param id The ID of the event to update.
-     * @param @event The updated event information in the request body.
-     * @return An IActionResult indicating the result of the operation.
-     */
+
+    /// <summary>
+    /// Update event information.
+    /// 
+    /// This endpoint allows updating the information of an event with the specified ID.
+    /// Only users with the "Admin" or "Organizer" roles are authorized to perform this action.
+    /// </summary>
+    ///
+    /// <param name="id">The ID of the event to update.</param>
+    /// <param name="event">The updated event information in the request body.</param>
+    /// <returns>An IActionResult indicating the result of the operation.</returns>
     [Authorize(Roles = "Admin")]
     [Authorize(Roles = "Organizer")]
     [HttpPut("{id:int}")]

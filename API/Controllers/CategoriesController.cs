@@ -16,6 +16,11 @@ public class CategoriesController : ControllerBase
         _unitOfWork = unitOfWork;
     }
 
+    /// <summary>
+    /// Gets all categories.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -27,6 +32,11 @@ public class CategoriesController : ControllerBase
         return Ok(category);
     }
 
+    /// <summary>
+    /// Deletes a category by its ID.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [Authorize(Roles = "Admin")]
     [Authorize(Roles = "Organizer")]
     [HttpDelete("{id:int}")]
@@ -42,6 +52,12 @@ public class CategoriesController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Updates a category by its ID.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="category"></param>
+    /// <returns></returns>
     [Authorize(Roles = "Admin")]
     [Authorize(Roles = "Organizer")]
     [HttpPut("{id:int}")]
