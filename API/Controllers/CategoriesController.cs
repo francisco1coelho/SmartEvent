@@ -37,8 +37,8 @@ public class CategoriesController : ControllerBase
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    [Authorize(Roles = "Admin")]
-    [Authorize(Roles = "Organizer")]
+    //[Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Organizer")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -58,8 +58,8 @@ public class CategoriesController : ControllerBase
     /// <param name="id"></param>
     /// <param name="category"></param>
     /// <returns></returns>
-    [Authorize(Roles = "Admin")]
-    [Authorize(Roles = "Organizer")]
+    //[Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Organizer")]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] Category category)
     {

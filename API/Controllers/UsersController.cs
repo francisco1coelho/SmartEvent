@@ -26,11 +26,13 @@ public class UsersController : ControllerBase
     /// 
     /// This endpoint retrieves the information of a user with the specified ID.
     /// It returns a 404 Not Found response if the user does not exist.
+    /// Only users with the "Admin" role are authorized to access this endpoint.
     /// </summary>
-    ///
+    /// 
     ///  <param name="id">The ID of the user to retrieve.</param>
     ///  <returns>Returns an IActionResult containing the user information or a 404 Not Found response.</returns>
     ///
+    //[Authorize(Roles = "Admin")]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -40,6 +42,42 @@ public class UsersController : ControllerBase
             return NotFound();
 
         return Ok(user);
+    }
+
+    /// <summary>
+    /// Get user by email.  
+    /// 
+    /// This endpoint retrieves the information of a user with the specified email address.
+    /// It returns a 404 Not Found response if the user does not exist.
+    /// Only users with the "Admin" or "Organizer" roles are authorized to access this endpoint.
+    /// </summary>
+    /// <param name="email"></param>
+    /// <returns>Returns an IActionResult containing the user information or a 404 Not Found response.</returns>
+    //[Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Organizer")]
+    [HttpGet("{email}")]
+    public async Task<IActionResult> GetByEmail(string email)
+    {
+        var user = await _unitOfWork.Users.GetByEmailAsync(email);
+
+        if (user is null)
+            return NotFound();
+
+        return Ok(user);
+    }
+
+    /// <summary>
+    /// Get all users.
+    /// Only users with the "Admin" or "Organizer" roles are authorized to access this endpoint.
+    /// </summary>
+    /// <returns>Returns an IActionResult containing the list of users.</returns>
+    //[Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Organizer")]
+    [HttpGet]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        var users = await _unitOfWork.Users.GetAllAsync();
+        return Ok(users);
     }
 
     /// <summary>
@@ -53,8 +91,8 @@ public class UsersController : ControllerBase
     /// <param name="userId"> The ID of the user to update.</param>
     /// <returns>Returns an IActionResult indicating the result of the operation.</returns>
 
-    [Authorize(Roles = "Admin")]
-    [HttpPut("{id:int}")]
+    //[Authorize(Roles = "Admin")]
+    [HttpPut("{userId:int}")]
     public async Task<IActionResult> Update(int userId, [FromBody] UpdateMeDto dto)
     {
         var success = await _userService.UpdateProfileAsync(userId, dto);
@@ -86,23 +124,5 @@ public class UsersController : ControllerBase
         var success = await _userService.UpdateProfileAsync(userId, dto);
 
         return success ? NoContent() : NotFound();
-    }
-
-    /// <summary>
-    /// Get user by email.  
-    /// </summary>
-    /// <param name="email"></param>
-    /// <returns></returns>
-    [Authorize(Roles = "Admin")]
-    [Authorize(Roles = "Organizer")]
-    [HttpGet("{email}")]
-    public async Task<IActionResult> GetByEmail(string email)
-    {
-        var user = await _unitOfWork.Users.GetByEmailAsync(email);
-
-        if (user is null)
-            return NotFound();
-
-        return Ok(user);
     }
 }

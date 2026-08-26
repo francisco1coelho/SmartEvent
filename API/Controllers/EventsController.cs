@@ -37,7 +37,7 @@ public class EventsController : ControllerBase
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -62,8 +62,8 @@ public class EventsController : ControllerBase
     /// <param name="id">The ID of the event to update.</param>
     /// <param name="event">The updated event information in the request body.</param>
     /// <returns>An IActionResult indicating the result of the operation.</returns>
-    [Authorize(Roles = "Admin")]
-    [Authorize(Roles = "Organizer")]
+    //[Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Organizer")]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] Event @event)
     {

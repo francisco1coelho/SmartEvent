@@ -8,7 +8,6 @@ This document records the endpoints currently visible in Swagger and the CRUD en
 - ❌ Not implemented
 - 🚧 In progress
 
-> Note: The implemented endpoints below were identified from the provided Swagger screenshots. Endpoints marked as "Not implemented" are inferred from the absence of their corresponding operations in Swagger and should be confirmed in the source code.
 
 ## Overview
 
@@ -17,8 +16,8 @@ This document records the endpoints currently visible in Swagger and the CRUD en
 | Categories | 3 | 2 |
 | Events | 3 | 2 |
 | Reservations | 2 | 3 |
-| Users | 4 | 3 |
-| **Total** | **12** | **10** |
+| Users | 5 | 2 |
+| **Total** | **13** | **9** |
 
 ## Categories
 
@@ -78,14 +77,15 @@ This document records the endpoints currently visible in Swagger and the CRUD en
 | Method | Route | Description | Status |
 |---|---|---|---|
 | GET | `/api/Users/{id}` | Retrieves a user by ID. Returns `404 Not Found` if the user does not exist. | ✅ |
+| GET | `/api/Users/{email}` | Retrieves a user by email address. | ✅ |
+| GET | `/api/Users` | Retrieves all users. | ✅ |
 | PUT | `/api/Users/{id}` | Updates a user's information by ID. Only users with the `Admin` role are authorized to perform this action. | ✅ |
 | PUT | `/api/Users/me` | Updates the authenticated user's profile. Authentication is required. | ✅ |
-| GET | `/api/Users/{email}` | Retrieves a user by email address. | ✅ |
+
 
 ### Not implemented
 
 | Method | Route | Description | Status |
 |---|---|---|---|
-| GET | `/api/Users` | Retrieves all users. | ❌ |
 | POST | `/api/Users` | Creates a new user. | ❌ |
 | DELETE | `/api/Users/{id}` | Deletes a user by ID. | ❌ |
