@@ -16,8 +16,8 @@ This document records the endpoints currently visible in Swagger and the CRUD en
 | Categories | 3 | 2 |
 | Events | 3 | 2 |
 | Reservations | 2 | 3 |
-| Users | 5 | 2 |
-| **Total** | **13** | **9** |
+| Users | 6 | 1 |
+| **Total** | **14** | **9** |
 
 ## Categories
 
@@ -81,6 +81,7 @@ This document records the endpoints currently visible in Swagger and the CRUD en
 | GET | `/api/Users` | Retrieves all users. | ✅ |
 | PUT | `/api/Users/{id}` | Updates a user's information by ID. Only users with the `Admin` role are authorized to perform this action. | ✅ |
 | PUT | `/api/Users/me` | Updates the authenticated user's profile. Authentication is required. | ✅ |
+| DELETE | `/api/Users/{id}` | Deletes a user by ID. | ✅ |
 
 
 ### Not implemented
@@ -88,4 +89,3 @@ This document records the endpoints currently visible in Swagger and the CRUD en
 | Method | Route | Description | Status |
 |---|---|---|---|
 | POST | `/api/Users` | Creates a new user. | ❌ |
-| DELETE | `/api/Users/{id}` | Deletes a user by ID. | ❌ |

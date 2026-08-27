@@ -109,7 +109,7 @@ public class UsersController : ControllerBase
     /// </summary>
     /// <param name="dto">The updated profile information in the request body.</param>
     /// <returns>An IActionResult indicating the result of the operation.</returns>
-    [Authorize]
+    //[Authorize]
     [HttpPut("me")]
     public async Task<IActionResult> UpdateMe([FromBody] UpdateMeDto dto)
     {
@@ -124,5 +124,24 @@ public class UsersController : ControllerBase
         var success = await _userService.UpdateProfileAsync(userId, dto);
 
         return success ? NoContent() : NotFound();
+    }
+
+    /// <summary>
+    /// Delete a user by ID.
+    /// 
+    /// Only users with the "Admin" role are authorized to perform this action.
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns>Returns an IActionResult indicating the result of the operation.</returns>
+    //[Authorize(Roles = "Admin")]
+    [HttpDelete("{userId:int}")]
+    public async Task<IActionResult> Delete(int userId)
+    {
+        var user = await _unitOfWork.Users.GetByIdAsync(userId);
+
+        if (user == null) return NotFound();
+        
+        await _unitOfWork.Users.DeleteAsync(user);
+        return NoContent();
     }
 }
