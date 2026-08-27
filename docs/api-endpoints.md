@@ -16,8 +16,8 @@ This document records the endpoints currently visible in Swagger and the CRUD en
 | Categories | 3 | 2 |
 | Events | 3 | 2 |
 | Reservations | 2 | 3 |
-| Users | 6 | 1 |
-| **Total** | **14** | **9** |
+| Users | 7 | 1 |
+| **Total** | **15** | **9** |
 
 ## Categories
 
@@ -82,10 +82,16 @@ This document records the endpoints currently visible in Swagger and the CRUD en
 | PUT | `/api/Users/{id}` | Updates a user's information by ID. Only users with the `Admin` role are authorized to perform this action. | ✅ |
 | PUT | `/api/Users/me` | Updates the authenticated user's profile. Authentication is required. | ✅ |
 | DELETE | `/api/Users/{id}` | Deletes a user by ID. | ✅ |
+| POST | `/api/Users` | Creates a new user. | ✅ |
+
 
 
 ### Not implemented
 
 | Method | Route | Description | Status |
 |---|---|---|---|
-| POST | `/api/Users` | Creates a new user. | ❌ |
+| PUT | `/api/Users` | (Un)Lock accounts | ❌ |
+
+### TODO in the future
+- Only admins can create admins and organizers accounts (they also can create participants accounts)
+- Participants can create their own account

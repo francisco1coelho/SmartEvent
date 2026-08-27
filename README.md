@@ -55,7 +55,7 @@ The project is strictly structured around the Clean Architecture model, divided 
    ```bash
    dotnet run --launch-profile "https"
    ```
-   *The Swagger interface will be available at `https://localhost:<port>/swagger`.*
+   *The Swagger interface will be available at `https://localhost:7034/swagger`.*
 
 ## 🗺 Roadmap & Progress
 

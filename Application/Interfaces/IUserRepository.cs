@@ -8,4 +8,6 @@ public interface IUserRepository : IRepository<User>
     Task<List<User?>> GetAllAsync();
 
     Task DeleteAsync(User user);
+
+    Task<User> CreateUser(User user);
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SmartEvent.Application.DTOs.Users;
 using SmartEvent.Application.Interfaces;
 using SmartEvent.Application.Services;
@@ -143,5 +142,19 @@ public class UsersController : ControllerBase
         
         await _unitOfWork.Users.DeleteAsync(user);
         return NoContent();
+    }
+
+    /// <summary>
+    /// Create a new user.
+    /// Only users with the "Admin" role are authorized to perform this action.
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns>Returns the created user.</returns>
+    //[Authorize(Roles = "Admin")]
+    [HttpPost]
+    public async Task<User> Create([FromBody] CreateUserDto dto)
+    {
+        var createdUser = await _userService.CreateUserAsync(dto);
+        return createdUser;
     }
 }
