@@ -35,7 +35,7 @@ public class UserService : IUserService
             PasswordHash = dto.Password,
             Role = dto.Role,
             Locked = false,
-            CreatedAt = DateTime.Now
+            CreatedAt = DateTime.UtcNow
         };
 
         return await _unitOfWork.Users.CreateUser(user);

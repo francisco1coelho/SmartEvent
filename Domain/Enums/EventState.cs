@@ -6,7 +6,7 @@ namespace SmartEvent.Domain.Enums
 {
     public enum EventState
     {
-        Active,
-        Cancelled
+        Active = 0,
+        Cancelled = 1
     }
 }

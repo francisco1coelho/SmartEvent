@@ -6,8 +6,8 @@ namespace SmartEvent.Domain.Enums
 {
     public enum ReservationState
     {
-        Pending,
-        Confirmed,
-        Cancelled
+        Active = 0,
+        Cancelled = 1,
+        Completed = 2
     }
 }

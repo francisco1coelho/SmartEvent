@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SmartEvent.Application.DTOs.ReservationsDto;
 using SmartEvent.Application.Interfaces;
+using SmartEvent.Application.Services;
 using SmartEvent.Domain.Entities;
 
 namespace SmartEvent.API.Controllers;
@@ -13,10 +15,23 @@ namespace SmartEvent.API.Controllers;
 public class ReservationsController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IReservationService _reservationService;
 
     public ReservationsController(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
+        _reservationService = new ReservationService(unitOfWork);
+    }
+
+    /// <summary>
+    /// Gets all reservations.
+    /// </summary>
+    /// <returns> A list of all reservations. </returns>
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var reservations = await _unitOfWork.Reservations.GetAllAsync();
+        return Ok(reservations);
     }
 
     /// <summary>
@@ -33,6 +48,13 @@ public class ReservationsController : ControllerBase
             return NotFound();
 
         return Ok(reservation);
+    }
+
+    [HttpPost]
+    public async Task<Reservation> CreateReservation([FromBody] CreateReservationDto reservation)
+    {
+        var createdReservation = await _reservationService.CreateReservationAsync(reservation);
+        return createdReservation;
     }
 
     /// <summary>

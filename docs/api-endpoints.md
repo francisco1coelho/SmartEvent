@@ -59,15 +59,15 @@ This document records the endpoints currently visible in Swagger and the CRUD en
 
 | Method | Route | Description | Status |
 |---|---|---|---|
+| GET | `/api/Reservations` | Retrieves all reservations. | ✅ |
 | GET | `/api/Reservations/{id}` | Retrieves a reservation by its ID. | ✅ |
 | DELETE | `/api/Reservations/{id}` | Deletes a reservation by its ID. Only users with the `Admin` role are authorized to perform this action. | ✅ |
+| POST | `/api/Reservations` | Creates a new reservation. | ✅ |
 
 ### Not implemented
 
 | Method | Route | Description | Status |
 |---|---|---|---|
-| GET | `/api/Reservations` | Retrieves all reservations. | ❌ |
-| POST | `/api/Reservations` | Creates a new reservation. | ❌ |
 | PUT | `/api/Reservations/{id}` | Updates a reservation by its ID. | ❌ |
 
 ## Users

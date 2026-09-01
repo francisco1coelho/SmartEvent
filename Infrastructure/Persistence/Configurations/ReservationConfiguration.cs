@@ -19,7 +19,6 @@ namespace SmartEvent.Infrastructure.Persistence.Configurations
 
             builder.Property(r => r.State)
                 .IsRequired()
-                .HasConversion<string>()
                 .HasMaxLength(20);
 
             builder.HasOne(r => r.Event)
