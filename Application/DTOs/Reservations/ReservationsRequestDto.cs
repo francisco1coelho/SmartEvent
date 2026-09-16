@@ -17,4 +17,14 @@ namespace SmartEvent.Application.DTOs.ReservationsDto
         [Required]
         public ReservationState state { get; set; }
     }
+
+    public class UpdateReservationDto
+    {
+        [Required]
+        public int EventId { get; set; }
+        [Required]
+        public int ParticipantId { get; set; }
+        [Required]
+        public ReservationState state { get; set; }
+    }
 }

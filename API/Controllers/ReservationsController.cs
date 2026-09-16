@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SmartEvent.Application.DTOs.Reservations;
 using SmartEvent.Application.DTOs.ReservationsDto;
 using SmartEvent.Application.Interfaces;
-using SmartEvent.Application.Services;
+using SmartEvent.Application.Interfaces.Services;
 using SmartEvent.Domain.Entities;
 
 namespace SmartEvent.API.Controllers;
@@ -14,13 +15,11 @@ namespace SmartEvent.API.Controllers;
 [Route("api/[controller]")]
 public class ReservationsController : ControllerBase
 {
-    private readonly IUnitOfWork _unitOfWork;
     private readonly IReservationService _reservationService;
 
-    public ReservationsController(IUnitOfWork unitOfWork)
+    public ReservationsController(IReservationService reservationService)
     {
-        _unitOfWork = unitOfWork;
-        _reservationService = new ReservationService(unitOfWork);
+        _reservationService = reservationService;
     }
 
     /// <summary>
@@ -30,7 +29,7 @@ public class ReservationsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var reservations = await _unitOfWork.Reservations.GetAllAsync();
+        var reservations = await _reservationService.GetAllAsync();
         return Ok(reservations);
     }
 
@@ -42,7 +41,7 @@ public class ReservationsController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var reservation = await _unitOfWork.Reservations.GetByIdAsync(id);
+        var reservation = await _reservationService.GetByIdAsync(id);
 
         if (reservation is null)
             return NotFound();
@@ -50,11 +49,45 @@ public class ReservationsController : ControllerBase
         return Ok(reservation);
     }
 
+    /// <summary>
+    /// Creates a new reservation.
+    /// </summary>
+    /// <param name="reservation"></param>
+    /// <returns>The created reservation.</returns>
     [HttpPost]
-    public async Task<Reservation> CreateReservation([FromBody] CreateReservationDto reservation)
+    public async Task<IActionResult> CreateReservation([FromBody] CreateReservationDto reservation)
     {
-        var createdReservation = await _reservationService.CreateReservationAsync(reservation);
-        return createdReservation;
+        try
+        {
+            var createdReservation = await _reservationService.CreateReservationAsync(reservation);
+            return CreatedAtAction(nameof(GetById), new { id = createdReservation.Id }, createdReservation);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Updates a reservation by its ID.
+    /// 
+    /// Only accessible to users with the "Admin" role.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="reservation"></param>
+    /// <returns>The updated reservation.</returns>
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateReservation(int id, [FromBody] UpdateReservationDto reservation)
+    {
+        try
+        {
+            var updatedReservation = await _reservationService.UpdateReservationAsync(id, reservation);
+            return Ok(updatedReservation);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
@@ -66,13 +99,14 @@ public class ReservationsController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var reservation = await _unitOfWork.Reservations.GetByIdAsync(id);
-
-        if (reservation is null)
-            return NotFound();
-
-        _unitOfWork.Reservations.Remove(reservation);
-        await _unitOfWork.SaveChangesAsync();
-        return NoContent();
+        try
+        {
+            await _reservationService.DeleteReservationAsync(id);
+            return NoContent();
+        }
+        catch (ArgumentException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 }

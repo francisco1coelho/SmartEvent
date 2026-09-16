@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SmartEvent.Application.Interfaces;
-using SmartEvent.Domain.Entities;
+using SmartEvent.Application.DTOs.Categories;
+using SmartEvent.Application.Interfaces.Services;
 
 namespace SmartEvent.API.Controllers;
 
@@ -9,27 +9,38 @@ namespace SmartEvent.API.Controllers;
 [Route("api/[controller]")]
 public class CategoriesController : ControllerBase
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly ICategoryService _categoryService;
 
-    public CategoriesController(IUnitOfWork unitOfWork)
+    public CategoriesController(ICategoryService categoryService)
     {
-        _unitOfWork = unitOfWork;
+        _categoryService = categoryService;
     }
 
     /// <summary>
-    /// Gets all categories.
+    /// Gets a category by its ID.
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var category = await _unitOfWork.Categories.GetByIdAsync(id);
+        var category = await _categoryService.GetCategoryByIdAsync(id);
 
         if (category is null)
             return NotFound();
 
         return Ok(category);
+    }
+
+    /// <summary>
+    /// Gets all categories.
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var categories = await _categoryService.GetAllCategoriesAsync();
+        return Ok(categories);
     }
 
     /// <summary>
@@ -42,14 +53,15 @@ public class CategoriesController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var category = await _unitOfWork.Categories.GetByIdAsync(id);
-
-        if (category is null)
-            return NotFound();
-
-        _unitOfWork.Categories.Remove(category);
-        await _unitOfWork.SaveChangesAsync();
-        return NoContent();
+        try
+        {
+            await _categoryService.DeleteCategoryAsync(id);
+            return NoContent();
+        }
+        catch (ArgumentException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
     /// <summary>
@@ -61,18 +73,16 @@ public class CategoriesController : ControllerBase
     //[Authorize(Roles = "Admin")]
     //[Authorize(Roles = "Organizer")]
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, [FromBody] Category category)
+    public async Task<IActionResult> Update(int id, [FromBody] CategoriesRequestDto category)
     {
-        var existingCategory = await _unitOfWork.Categories.GetByIdAsync(id);
-
-        if (existingCategory is null)
-            return NotFound();
-
-        existingCategory.Name = category.Name;
-
-        _unitOfWork.Categories.Update(existingCategory);
-        await _unitOfWork.SaveChangesAsync();
-
-        return Ok(existingCategory);
+        try
+        {
+            var updatedCategory = await _categoryService.UpdateCategoryAsync(id, category);
+            return Ok(updatedCategory);
+        }
+        catch (ArgumentException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 }

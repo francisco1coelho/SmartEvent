@@ -1,4 +1,5 @@
 ﻿using SmartEvent.Application.Interfaces;
+using SmartEvent.Application.Interfaces.Repository;
 using SmartEvent.Infrastructure.Persistence;
 
 namespace SmartEvent.Infrastructure.Repositories;

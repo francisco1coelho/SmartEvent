@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SmartEvent.Application.Interfaces;
-using SmartEvent.Domain.Entities;
+using SmartEvent.Application.DTOs.Events;
+using SmartEvent.Application.Interfaces.Services;
 
 namespace SmartEvent.API.Controllers;
 
@@ -9,11 +9,11 @@ namespace SmartEvent.API.Controllers;
 [Route("api/[controller]")]
 public class EventsController : ControllerBase
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IEventService _eventService;
 
-    public EventsController(IUnitOfWork unitOfWork)
+    public EventsController(IEventService eventService)
     {
-        _unitOfWork = unitOfWork;
+        _eventService = eventService;
     }
 
     /// <summary>
@@ -24,12 +24,23 @@ public class EventsController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var @event = await _unitOfWork.Events.GetByIdAsync(id);
+        var @event = await _eventService.GetEventByIdAsync(id);
 
         if (@event is null)
             return NotFound();
 
         return Ok(@event);
+    }
+
+    /// <summary>
+    /// Retrieves all events.
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var events = await _eventService.GetAllEventsAsync();
+        return Ok(events);
     }
 
     /// <summary>
@@ -41,14 +52,15 @@ public class EventsController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var @event = await _unitOfWork.Events.GetByIdAsync(id);
-
-        if (@event is null)
-            return NotFound();
-
-        _unitOfWork.Events.Remove(@event);
-        await _unitOfWork.SaveChangesAsync();
-        return NoContent();
+        try
+        {
+            await _eventService.DeleteEventAsync(id);
+            return NoContent();
+        }
+        catch (ArgumentException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
 
@@ -65,27 +77,17 @@ public class EventsController : ControllerBase
     //[Authorize(Roles = "Admin")]
     //[Authorize(Roles = "Organizer")]
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, [FromBody] Event @event)
+    public async Task<IActionResult> Update(int id, [FromBody] EventsRequestDto @event)
     {
-        var existingEvent = await _unitOfWork.Events.GetByIdAsync(id);
-
-        if (existingEvent is null)
-            return NotFound();
-
-        existingEvent.Name = @event.Name;
-        existingEvent.Description = @event.Description;
-        existingEvent.StartDate = @event.StartDate;
-        existingEvent.EndDate = @event.EndDate;
-        existingEvent.MaxCapacity = @event.MaxCapacity;
-        existingEvent.Location = @event.Location;
-        existingEvent.CategoryId = @event.CategoryId;
-        existingEvent.OrganizerId = @event.OrganizerId;
-        existingEvent.State = @event.State;
-
-        _unitOfWork.Events.Update(existingEvent);
-        await _unitOfWork.SaveChangesAsync();
-
-        return Ok(existingEvent);
+        try
+        {
+            var updatedEvent = await _eventService.UpdateEventAsync(id, @event);
+            return Ok(updatedEvent);
+        }
+        catch (ArgumentException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
 }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SmartEvent.Application.DTOs.Users;
-using SmartEvent.Application.Interfaces;
-using SmartEvent.Application.Services;
+using SmartEvent.Application.Interfaces.Services;
 using SmartEvent.Domain.Entities;
 using System.Security.Claims;
 
@@ -11,12 +10,10 @@ namespace SmartEvent.API.Controllers;
 [Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
-    private readonly IUnitOfWork _unitOfWork;
     private readonly IUserService _userService;
 
-    public UsersController(IUnitOfWork unitOfWork, IUserService userService)
+    public UsersController(IUserService userService)
     {
-        _unitOfWork = unitOfWork;
         _userService = userService;
     }
 
@@ -35,7 +32,7 @@ public class UsersController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var user = await _unitOfWork.Users.GetByIdAsync(id);
+        var user = await _userService.GetByIdAsync(id);
 
         if (user is null)
             return NotFound();
@@ -54,10 +51,10 @@ public class UsersController : ControllerBase
     /// <returns>Returns an IActionResult containing the user information or a 404 Not Found response.</returns>
     //[Authorize(Roles = "Admin")]
     //[Authorize(Roles = "Organizer")]
-    [HttpGet("{email}")]
+    [HttpGet("by-email/{email}")]
     public async Task<IActionResult> GetByEmail(string email)
     {
-        var user = await _unitOfWork.Users.GetByEmailAsync(email);
+        var user = await _userService.GetByEmailAsync(email);
 
         if (user is null)
             return NotFound();
@@ -75,7 +72,7 @@ public class UsersController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllUsers()
     {
-        var users = await _unitOfWork.Users.GetAllAsync();
+        var users = await _userService.GetAllAsync();
         return Ok(users);
     }
 
@@ -136,12 +133,15 @@ public class UsersController : ControllerBase
     [HttpDelete("{userId:int}")]
     public async Task<IActionResult> Delete(int userId)
     {
-        var user = await _unitOfWork.Users.GetByIdAsync(userId);
-
-        if (user == null) return NotFound();
-        
-        await _unitOfWork.Users.DeleteAsync(user);
-        return NoContent();
+        try
+        {
+            await _userService.DeleteAsync(userId);
+            return NoContent();
+        }
+        catch (ArgumentException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
     /// <summary>

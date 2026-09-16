@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SmartEvent.Application.Interfaces;
+using SmartEvent.Application.Interfaces.Repository;
 using SmartEvent.Domain.Entities;
 using SmartEvent.Infrastructure.Persistence;
 
@@ -21,16 +21,13 @@ public class UserRepository : Repository<User>, IUserRepository
         return await _context.Users.ToListAsync();
     }
 
-    public async Task DeleteAsync(User user)
+    public void DeleteUser(User user)
     {
         _context.Users.Remove(user);
-        await _context.SaveChangesAsync();
     }
 
-    public async Task<User> CreateUser(User user)
+    public void CreateUser(User user)
     {
         _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-        return user;
     }
 }

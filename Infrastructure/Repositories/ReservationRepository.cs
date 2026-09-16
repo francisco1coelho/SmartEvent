@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SmartEvent.Application.Interfaces;
+using SmartEvent.Application.Interfaces.Repository;
 using SmartEvent.Domain.Entities;
 using SmartEvent.Infrastructure.Persistence;
 
 namespace SmartEvent.Infrastructure.Repositories;
+
 public class ReservationRepository : Repository<Reservation>, IReservationRepository
 {
     public ReservationRepository(SmartEventDbContext context) : base(context)
@@ -15,10 +16,18 @@ public class ReservationRepository : Repository<Reservation>, IReservationReposi
         return await _context.Reservations.ToListAsync();
     }
 
-    public async Task<Reservation> AddReservationAsync(Reservation reservation)
+    public async Task<Reservation?> GetReservationByIdAsync(int id)
+    {
+        return await _context.Reservations.FirstOrDefaultAsync(r => r.Id == id);
+    }
+
+    public void CreateReservation(Reservation reservation)
     {
         _context.Reservations.Add(reservation);
-        await _context.SaveChangesAsync();
-        return reservation;
+    }
+
+    public void UpdateReservation(Reservation reservation)
+    {
+        _context.Reservations.Update(reservation);
     }
 }

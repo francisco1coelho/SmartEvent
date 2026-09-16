@@ -1,4 +1,6 @@
-﻿namespace SmartEvent.Application.Interfaces;
+﻿using SmartEvent.Application.Interfaces.Repository;
+
+namespace SmartEvent.Application.Interfaces;
 
 public interface IUnitOfWork
 {

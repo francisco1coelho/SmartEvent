@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SmartEvent.Application.Interfaces;
+using SmartEvent.Application.Interfaces.Repository;
+using SmartEvent.Application.Interfaces.Services;
 using SmartEvent.Application.Services;
 using SmartEvent.Infrastructure.Persistence;
 using SmartEvent.Infrastructure.Repositories;
