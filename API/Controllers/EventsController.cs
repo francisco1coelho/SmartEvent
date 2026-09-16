@@ -19,8 +19,6 @@ public class EventsController : ControllerBase
     /// <summary>
     /// Retrieves an event by its ID.
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -29,25 +27,48 @@ public class EventsController : ControllerBase
         if (@event is null)
             return NotFound();
 
-        return Ok(@event);
+        return Ok(new EventsResponseDto
+        {
+            Id = @event.Id,
+            Name = @event.Name,
+            Description = @event.Description,
+            StartDate = @event.StartDate,
+            EndDate = @event.EndDate,
+            MaxCapacity = @event.MaxCapacity,
+            Location = @event.Location,
+            CreatedAt = @event.CreatedAt,
+            State = @event.State,
+            CategoryId = @event.CategoryId,
+            OrganizerId = @event.OrganizerId
+        });
     }
 
     /// <summary>
     /// Retrieves all events.
     /// </summary>
-    /// <returns></returns>
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         var events = await _eventService.GetAllEventsAsync();
-        return Ok(events);
+        return Ok(events.Select(@event => new EventsResponseDto
+        {
+            Id = @event.Id,
+            Name = @event.Name,
+            Description = @event.Description,
+            StartDate = @event.StartDate,
+            EndDate = @event.EndDate,
+            MaxCapacity = @event.MaxCapacity,
+            Location = @event.Location,
+            CreatedAt = @event.CreatedAt,
+            State = @event.State,
+            CategoryId = @event.CategoryId,
+            OrganizerId = @event.OrganizerId
+        }));
     }
 
     /// <summary>
     /// Deletes an event by its ID. Only users with the "Admin" role are authorized to perform this action.
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
     //[Authorize(Roles = "Admin")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
@@ -82,12 +103,24 @@ public class EventsController : ControllerBase
         try
         {
             var updatedEvent = await _eventService.UpdateEventAsync(id, @event);
-            return Ok(updatedEvent);
+            return Ok(new EventsResponseDto
+            {
+                Id = updatedEvent.Id,
+                Name = updatedEvent.Name,
+                Description = updatedEvent.Description,
+                StartDate = updatedEvent.StartDate,
+                EndDate = updatedEvent.EndDate,
+                MaxCapacity = updatedEvent.MaxCapacity,
+                Location = updatedEvent.Location,
+                CreatedAt = updatedEvent.CreatedAt,
+                State = updatedEvent.State,
+                CategoryId = updatedEvent.CategoryId,
+                OrganizerId = updatedEvent.OrganizerId
+            });
         }
         catch (ArgumentException ex)
         {
             return NotFound(ex.Message);
         }
     }
-
 }

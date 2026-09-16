@@ -1,5 +1,5 @@
 ﻿// Application/Services/IReservationService.cs
-using SmartEvent.Application.DTOs.ReservationsDto;
+using SmartEvent.Application.DTOs.Reservations;
 using SmartEvent.Domain.Entities;
 
 namespace SmartEvent.Application.Interfaces.Services;

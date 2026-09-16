@@ -1,5 +1,5 @@
 ﻿// Application/Services/ReservationService.cs
-using SmartEvent.Application.DTOs.ReservationsDto;
+using SmartEvent.Application.DTOs.Reservations;
 using SmartEvent.Application.Interfaces;
 using SmartEvent.Application.Interfaces.Services;
 using SmartEvent.Domain.Entities;
@@ -33,7 +33,7 @@ public class ReservationService : IReservationService
             CreatedAt = DateTime.UtcNow,
             EventId = reservation.EventId,
             ParticipantId = reservation.ParticipantId,
-            State = reservation.state
+            State = reservation.State
         };
 
         _unitOfWork.Reservations.CreateReservation(newReservation);
@@ -61,7 +61,7 @@ public class ReservationService : IReservationService
 
         existingReservation.EventId = reservation.EventId;
         existingReservation.ParticipantId = reservation.ParticipantId;
-        existingReservation.State = reservation.state;
+        existingReservation.State = reservation.State;
 
         _unitOfWork.Reservations.UpdateReservation(existingReservation);
         await _unitOfWork.SaveChangesAsync();

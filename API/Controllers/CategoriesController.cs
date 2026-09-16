@@ -19,8 +19,6 @@ public class CategoriesController : ControllerBase
     /// <summary>
     /// Gets a category by its ID.
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -29,25 +27,30 @@ public class CategoriesController : ControllerBase
         if (category is null)
             return NotFound();
 
-        return Ok(category);
+        return Ok(new CategoriesResponseDto
+        {
+            Id = category.Id,
+            Name = category.Name
+        });
     }
 
     /// <summary>
     /// Gets all categories.
     /// </summary>
-    /// <returns></returns>
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         var categories = await _categoryService.GetAllCategoriesAsync();
-        return Ok(categories);
+        return Ok(categories.Select(category => new CategoriesResponseDto
+        {
+            Id = category.Id,
+            Name = category.Name
+        }));
     }
 
     /// <summary>
     /// Deletes a category by its ID.
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
     //[Authorize(Roles = "Admin")]
     //[Authorize(Roles = "Organizer")]
     [HttpDelete("{id:int}")]
@@ -67,9 +70,6 @@ public class CategoriesController : ControllerBase
     /// <summary>
     /// Updates a category by its ID.
     /// </summary>
-    /// <param name="id"></param>
-    /// <param name="category"></param>
-    /// <returns></returns>
     //[Authorize(Roles = "Admin")]
     //[Authorize(Roles = "Organizer")]
     [HttpPut("{id:int}")]
@@ -78,7 +78,11 @@ public class CategoriesController : ControllerBase
         try
         {
             var updatedCategory = await _categoryService.UpdateCategoryAsync(id, category);
-            return Ok(updatedCategory);
+            return Ok(new CategoriesResponseDto
+            {
+                Id = updatedCategory.Id,
+                Name = updatedCategory.Name
+            });
         }
         catch (ArgumentException ex)
         {

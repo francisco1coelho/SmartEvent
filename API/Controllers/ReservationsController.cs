@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartEvent.Application.DTOs.Reservations;
-using SmartEvent.Application.DTOs.ReservationsDto;
-using SmartEvent.Application.Interfaces;
 using SmartEvent.Application.Interfaces.Services;
-using SmartEvent.Domain.Entities;
 
 namespace SmartEvent.API.Controllers;
 
@@ -30,7 +27,15 @@ public class ReservationsController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var reservations = await _reservationService.GetAllAsync();
-        return Ok(reservations);
+        return Ok(reservations.Select(reservation => new ReservationsResponseDto
+        {
+            Id = reservation.Id,
+            CreatedAt = reservation.CreatedAt,
+            CancelledAt = reservation.CancelledAt,
+            State = reservation.State,
+            EventId = reservation.EventId,
+            ParticipantId = reservation.ParticipantId
+        }));
     }
 
     /// <summary>
@@ -46,7 +51,15 @@ public class ReservationsController : ControllerBase
         if (reservation is null)
             return NotFound();
 
-        return Ok(reservation);
+        return Ok(new ReservationsResponseDto
+        {
+            Id = reservation.Id,
+            CreatedAt = reservation.CreatedAt,
+            CancelledAt = reservation.CancelledAt,
+            State = reservation.State,
+            EventId = reservation.EventId,
+            ParticipantId = reservation.ParticipantId
+        });
     }
 
     /// <summary>
@@ -55,12 +68,22 @@ public class ReservationsController : ControllerBase
     /// <param name="reservation"></param>
     /// <returns>The created reservation.</returns>
     [HttpPost]
-    public async Task<IActionResult> CreateReservation([FromBody] CreateReservationDto reservation)
+    public async Task<ActionResult<ReservationsResponseDto>> CreateReservation([FromBody] CreateReservationDto reservation)
     {
         try
         {
             var createdReservation = await _reservationService.CreateReservationAsync(reservation);
-            return CreatedAtAction(nameof(GetById), new { id = createdReservation.Id }, createdReservation);
+            var response = new ReservationsResponseDto
+            {
+                Id = createdReservation.Id,
+                CreatedAt = createdReservation.CreatedAt,
+                CancelledAt = createdReservation.CancelledAt,
+                State = createdReservation.State,
+                EventId = createdReservation.EventId,
+                ParticipantId = createdReservation.ParticipantId
+            };
+
+            return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
         }
         catch (ArgumentException ex)
         {
@@ -82,7 +105,15 @@ public class ReservationsController : ControllerBase
         try
         {
             var updatedReservation = await _reservationService.UpdateReservationAsync(id, reservation);
-            return Ok(updatedReservation);
+            return Ok(new ReservationsResponseDto
+            {
+                Id = updatedReservation.Id,
+                CreatedAt = updatedReservation.CreatedAt,
+                CancelledAt = updatedReservation.CancelledAt,
+                State = updatedReservation.State,
+                EventId = updatedReservation.EventId,
+                ParticipantId = updatedReservation.ParticipantId
+            });
         }
         catch (ArgumentException ex)
         {
